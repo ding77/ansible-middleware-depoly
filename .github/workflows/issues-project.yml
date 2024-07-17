@@ -1,0 +1,17 @@
+name: 🚀 Auto Add Issue To Project
+on:
+  issues:
+    types:
+      - opened
+jobs:
+  add-issue-to-project:
+    runs-on: ubuntu-latest
+    if: "github.event_name == 'issues'"
+    steps:
+      - uses: alex-page/github-project-automation-plus@v0.8.1
+        with:
+          project: ISSUE 跟进大盘
+          column: 新建
+          repo-token: ${{ secrets.GH_PROJECT_TOKEN }}
+          action: add
+ 
