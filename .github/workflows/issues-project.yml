@@ -12,6 +12,6 @@ jobs:
         with:
           project: ISSUE 跟进大盘
           column: 新建
-          repo-token: ${{ secrets.GH_PROJECT_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           action: add
  
