@@ -14,5 +14,5 @@ jobs:
         with:
           repo-token: ${{ secrets.GH_PROJECT_TOKEN }}
           project: 'ISSUE跟进大盘'
-          column: 'New ISSUE'
+          column: 'NewISSUE'
           action: add
