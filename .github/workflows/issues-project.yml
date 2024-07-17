@@ -13,6 +13,6 @@ jobs:
         uses: alex-page/github-project-automation-plus@v0.8.1
         with:
           repo-token: ${{ secrets.GH_PROJECT_TOKEN }}
-          project: Test
-          column: Todo
+          project: "Test"
+          column: "Todo"
           action: add
