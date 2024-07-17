@@ -13,3 +13,4 @@ jobs:
           project: 'ISSUE跟进大盘'
           column: 'New ISSUE'
           labels: 'bug, enhancement'
+          action: add
