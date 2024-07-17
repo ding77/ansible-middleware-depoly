@@ -10,4 +10,5 @@ jobs:
       - uses: actions/add-to-project@v0.4.1
         with:
           project-url: https://github.com/users/ding77/projects/10
+          column: Todo
           github-token: ${{ secrets.GH_PROJECT_TOKEN }}
