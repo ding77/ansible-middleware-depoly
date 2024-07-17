@@ -1,15 +1,18 @@
-name: Issue to Project Automation
+name: 🚀 Auto Add Issue And PR To Project
 on:
   issues:
-    types: [opened, labeled]
+    types:
+      - opened
+
 jobs:
   automate-project-card:
     runs-on: ubuntu-latest
+    if: "github.event_name == 'issues'"
     steps:
       - name: Add New Issue to Project Board
         uses: alex-page/github-project-automation-plus@v0.8.1
         with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          repo-token: ${{ secrets.GH_PROJECT_TOKEN }}
           project: 'ISSUE跟进大盘'
           column: 'New ISSUE'
           action: add
