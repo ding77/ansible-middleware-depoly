@@ -14,5 +14,5 @@ jobs:
         with:
           repo-token: ${{ secrets.GH_PROJECT_TOKEN }}
           project: 'ISSUE'
-          column: 'TODO'
+          column: 'Todo'
           action: add
