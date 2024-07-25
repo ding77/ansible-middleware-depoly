@@ -32,6 +32,18 @@ jobs:
             你好 @${{ github.event.issue.user.login }}，你所提供的信息不足于我们排查问题, 请完善 issue 描述, 提供 gif, 截图等方式, 详细说明复现步骤, 感谢配合, 谢谢!
 
             Hello, @${{ github.event.issue.user.login }}, the information you provided is not enough for us to troubleshoot the problem. Please complete the issue description, provide gifs, screenshots, etc. And explain the reproduction steps in detail. Thanks so much for your cooperation!
+      
+      - name: ExcuseMe
+        if: github.event.label.name == '🤷‍♂️ ExcuseMe'
+        uses: actions-cool/issues-helper@main
+        with:
+          actions: 'create-comment'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            你好 @${{ github.event.issue.user.login }}，为了更加快速高效的解决问题，请用更加清晰的语言描述当前问题，方便相关同学的处理，谢谢!
+
+            Hello, @${{ github.event.issue.user.login }}, In order to solve the problem more quickly and efficiently, please describe the current problem in clearer language for the convenience of relevant students. Thank you!
 
       - name: Working
         if: github.event.label.name == '💻 working'
