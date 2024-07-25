@@ -1,13 +1,124 @@
-name: Issue Reply
+name: Issue Labeled
+
 on:
   issues:
     types: [labeled]
+
 jobs:
-  reply-helper:
+  issue-labeled:
+    if: github.actor != github.event.issue.user.login
     runs-on: ubuntu-latest
     steps:
+      - name: Need reproduce
+        if: github.event.label.name == '🤔 need reproduce'
+        uses: actions-cool/issues-helper@main
+        with:
+          actions: 'create-comment'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            你好 @${{ github.event.issue.user.login }}，目前所提供的信息无法进行问题的定位与排查，请提供可用于复现当前问题的必要操作步骤，如关键代码片段，脱敏的数据文件等, 15 天内未回复issue自动关闭，请知晓。
+
+            Hello, @${{ github.event.issue.user.login }}, At present, the information provided cannot locate and troubleshoot the problem. Please provide necessary operational steps that can be used to reproduce the current problem, such as key code snippets, desensitized data files, etc. If there is no response within 15 days, the issue will be automatically closed. Please be aware.
+
+      - name: Need more info
+        if: github.event.label.name == '👀 need more info'
+        uses: actions-cool/issues-helper@main
+        with:
+          actions: 'create-comment'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            你好 @${{ github.event.issue.user.login }}，你所提供的信息不足于我们排查问题, 请完善 issue 描述, 提供 gif, 截图等方式, 详细说明复现步骤, 感谢配合, 谢谢!
+
+            Hello, @${{ github.event.issue.user.login }}, the information you provided is not enough for us to troubleshoot the problem. Please complete the issue description, provide gifs, screenshots, etc. And explain the reproduction steps in detail. Thanks so much for your cooperation!
+
+      - name: Working
+        if: github.event.label.name == '💻 working'
+        uses: actions-cool/issues-helper@main
+        with:
+          actions: 'create-comment'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            你好 @${{ github.event.issue.user.login }}，目前正在进行问题的确认与复现，有结论会及时反馈, 感谢!
+
+            Hello, @${{ github.event.issue.user.login }}, We are currently confirming and reproducing the issue, and will provide timely feedback if there is a conclusion. Thank you.
+
+      - name: Invalid
+        if: github.event.label.name == '⛔ invalid'
+        uses: actions-cool/issues-helper@main
+        with:
+          actions: 'create-comment,close-issue'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            你好 @${{ github.event.issue.user.login }}，请按照 issue 模板填写相关信息, 方便大家高效沟通。
+
+            Hello @${{ github.event.issue.user.login }}, please fill in the relevant information according to the issue template to facilitate communication efficiently. Thanks so much!
+
+      - name: Enhancement
+        if: github.event.label.name == '⚡ enhancement'
+        uses: actions-cool/issues-helper@main
+        with:
+          actions: 'create-comment'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            你好 @${{ github.event.issue.user.login }}，感谢你的建议, 我们会及时评估和排期, 谢谢!
+
+            Hello, @${{ github.event.issue.user.login }}, thanks for your advice. We will evaluate and schedule in time. Thank you!
+
+      - name: Bug
+        if: github.event.label.name == '🐛 bug'
+        uses: actions-cool/issues-helper@main
+        with:
+          actions: 'create-comment'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            你好 @${{ github.event.issue.user.login }}，很抱歉给你带来了不好的体验, 我们会尽快排查问题并修复, 请关注后续发布日志.
+
+            Hello, @${{ github.event.issue.user.login }}, We are so sorry for the bad experience. We will troubleshoot and fix the problem as soon as possible. Please pay attention to the follow-up change logs.
+
+      - name: Need test cases or docs
+        if: github.event.label.name == '🙏 need test cases or docs'
+        uses: actions-cool/issues-helper@main
+        with:
+          actions: 'create-comment'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            你好 @${{ github.event.issue.user.login }}，很抱歉给你带来了不好的体验，目前还在确认问题原因，我们会及时进行问题的反馈，谢谢！
+
+            Hello, @${{ github.event.issue.user.login }}, I'm sorry for the bad experience you had. We are still confirming the cause of the problem and will provide timely feedback. Thank you ！
+
+      - name: Accepted
+        if: github.event.label.name == '✅ accepted'
+        uses: actions-cool/issues-helper@main
+        with:
+          actions: 'create-comment'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            你好 @${{ github.event.issue.user.login }}，经过我们的反复讨论, 你的需求现已被采纳, 我们会排期开发, 请关注后续发布日志.
+
+            Hello, @${{ github.event.issue.user.login }}, your feature request have been accepted After our repeated discussion. We will schedule the development, please pay attention to the follow-up release logs
+
+      - name: Loading
+        if: github.event.label.name == '☕Loading'
+        uses: actions-cool/issues-helper@main
+        with:
+          actions: 'create-comment'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            你好 @${{ github.event.issue.user.login }}，该功能目前已在功能的迭代计划当中，近期会对外透出, 请关注后续发布日志.
+
+            Hello, @${{ github.event.issue.user.login }}, This feature is currently in the iteration plan and will be released to the public soon. Please pay attention to the subsequent release logs.
+
       - name: help wanted
-        if: github.event.label.name == 'help wanted'
+        if: github.event.label.name == '🤩 help wanted'
         uses: actions-cool/issues-helper@v1.2
         with:
           actions: 'create-comment'
