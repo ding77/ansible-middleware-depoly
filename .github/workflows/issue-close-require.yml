@@ -32,7 +32,7 @@ jobs:
 
             Since the issue was labeled as "👀 need more info" but no response was received for 15 days. Now close the issue. If you have any questions, feel free to comment.
 
-       - name: ExcuseMe
+      - name: ExcuseMe
         uses: actions-cool/issues-helper@main
         with:
           actions: 'close-issues'
