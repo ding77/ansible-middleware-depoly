@@ -67,9 +67,9 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.issue.number }}
           body: |
-            你好 @${{ github.event.issue.user.login }}，请按照 issue 模板填写相关信息, 方便大家高效沟通。
+            你好 @${{ github.event.issue.user.login }}，为了能够进行高效沟通，我们对 issue 有一定的格式要求，你的 issue 因为不符合要求而被自动关闭，请按照 issue 模板填写相关信息, 方便大家高效沟通。
 
-            Hello @${{ github.event.issue.user.login }}, please fill in the relevant information according to the issue template to facilitate communication efficiently. Thanks so much!
+            Hello @${{ github.event.issue.user.login }}, To ensure efficient communication, we have format requirements for issues. Your issue has been automatically closed due to non-compliance with the issue template. Please fill out the relevant information according to the issue template to facilitate efficient communication。
       
       - name: duplicate
         if: github.event.label.name == '😳 duplicate' 
