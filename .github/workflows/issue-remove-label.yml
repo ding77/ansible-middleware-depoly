@@ -1,0 +1,35 @@
+# 用来触发更新ISSUE/新增/修改评论/移除标签的动作
+#
+name: Issue Remove Label
+
+on:
+  # issue 更新
+  issues:
+    types: [edited, closed]
+  # issue 新增/修改评论
+  issue_comment:
+    types: [created, edited]
+permissions:
+  contents: read
+
+jobs:
+  issue-remove-inactive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: remove inactive
+        # 当前 issue 是打开状态, 并且是楼主触发的更新
+        if: github.event.issue.state == 'open' && github.actor == github.event.issue.user.login
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: 'remove-labels'
+          issue-number: ${{ github.event.issue.number }}
+          labels: '💤 inactive,🤔 need reproduce,👀 need more info'
+
+      - name: remove 
+        # 当关闭ISSUE时触发的移除标签
+        if: github.event.issue.state == 'closed'
+        uses: actions-cool/issues-helper@v3
+        with:
+          actions: 'remove-labels'
+          issue-number: ${{ github.event.issue.number }}
+          labels: '🤔 need reproduce,👀 need more info,💻 working,🤷‍♂️ ExcuseMe,🙏 need test cases or docs'
