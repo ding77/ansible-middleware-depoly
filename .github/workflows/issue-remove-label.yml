@@ -9,8 +9,6 @@ on:
   # issue 新增/修改评论
   issue_comment:
     types: [created, edited]
-permissions:
-  contents: read
 
 jobs:
   issue-remove-inactive:
