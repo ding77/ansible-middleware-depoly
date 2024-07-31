@@ -34,11 +34,4 @@ jobs:
           issue-number: ${{ github.event.issue.number }}
           labels: '🤔 need reproduce,👀 need more info,💻 working,🤷‍♂️ ExcuseMe,🙏 need test cases or docs'
 
-      - name: reopen
-        # 当评论并且是楼主触发的更新时，重新打开ISSUE
-        if: github.event.issue.state == 'closed' && github.actor == github.event.issue.user.login
-        uses: actions-cool/issues-helper@v3
-        with:
-          actions: 'reopen'
-          issue-number: ${{ github.event.issue.number }}
           
