@@ -18,7 +18,7 @@ jobs:
       if: github.event.action == 'opened'
       with:
         project: 'https://github.com/users/ding77/projects/10'
-        column_name: Todo
+        column_name: "Todo"
 
     - name: Assign issues and pull requests with `bug` label to project ISSUE
       uses: srggrs/assign-one-project-github-action@1.2.0
@@ -29,4 +29,4 @@ jobs:
         contains(github.event.issue.labels.*.name, 'usage')
       with:
         project: 'https://github.com/users/ding77/projects/10'
-        column_name: In Progress
+        column_name: "In Progress"
