@@ -1,14 +1,31 @@
-name: 🚀 Auto Add Issue And PR To Project
+name: Auto Assign to Project(s)
+
 on:
   issues:
-    types:
-      - opened
+    types: [opened, reopened, labeled, closed]
+  issue_comment:
+    types: [created]
+env:
+  GITHUB_TOKEN: ${{ secrets.GH_PROJECT_TOKEN }}
+
 jobs:
-  add-to-project:
+  assign_one_project:
     runs-on: ubuntu-latest
+    name: Assign to One Project
     steps:
-      - uses: actions/add-to-project@v0.4.1
-        with:
-          project-url: https://github.com/users/ding77/projects/10
-          column: Todo
-          github-token: ${{ secrets.GH_PROJECT_TOKEN }}
+    - name: Assign NEW issues and NEW pull requests to project ISSUE
+      uses: srggrs/assign-one-project-github-action@1.2.1
+      if: github.event.action == 'opened'
+      with:
+        project: 'https://github.com/users/ding77/projects/10'
+
+    - name: Assign issues and pull requests with `bug` label to project ISSUE
+      uses: srggrs/assign-one-project-github-action@1.2.1
+      if: |
+        contains(github.event.issue.labels.*.name, 'BySelf') ||
+        contains(github.event.issue.labels.*.name, 'Discussion') ||
+        contains(github.event.issue.labels.*.name, 'question') || 
+        contains(github.event.issue.labels.*.name, 'usage')
+      with:
+        project: 'https://github.com/users/ding77/projects/10'
+        column_name: 'In Progress'
