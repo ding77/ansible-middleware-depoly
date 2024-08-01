@@ -17,9 +17,9 @@ jobs:
       uses: srggrs/assign-one-project-github-action@1.2.1
       if: github.event.action == 'opened'
       with:
-        project: 'https://github.com/users/ding77/projects/10'
+        project: https://github.com/users/ding77/projects/10
 
-    - name: Assign issues and pull requests with `bug` label to project 3
+    - name: Assign issues and pull requests with `bug` label to project ISSUE
       uses: srggrs/assign-one-project-github-action@1.2.1
       if: |
         contains(github.event.issue.labels.*.name, 'BySelf') ||
@@ -27,5 +27,5 @@ jobs:
         contains(github.event.issue.labels.*.name, 'question') || 
         contains(github.event.issue.labels.*.name, 'usage')
       with:
-        project: 'https://github.com/users/ding77/projects/10'
+        project: https://github.com/users/ding77/projects/10
         column_name: 'In Progress'
