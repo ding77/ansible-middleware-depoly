@@ -6,7 +6,7 @@ on:
   issue_comment:
     types: [created]
 env:
-  GH_PROJECT_TOKEN: ${{ secrets.GH_PROJECT_TOKEN }}
+  MY_GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
 
 jobs:
   assign_one_project:
@@ -19,7 +19,7 @@ jobs:
       with:
         project: 'https://github.com/users/ding77/projects/10'
 
-    - name: Assign issues and pull requests with `bug` label to project ISSUE
+    - name: Assign issues and pull requests with `bug` label to project 3
       uses: srggrs/assign-one-project-github-action@1.2.1
       if: |
         contains(github.event.issue.labels.*.name, 'BySelf') ||
