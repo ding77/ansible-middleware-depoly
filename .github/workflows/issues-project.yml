@@ -6,7 +6,7 @@ on:
   issue_comment:
     types: [created]
 env:
-  GITHUB_TOKEN: ${{ secrets.GH_PROJECT_TOKEN }}
+  GH_PROJECT_TOKEN: ${{ secrets.GH_PROJECT_TOKEN }}
 
 jobs:
   assign_one_project:
