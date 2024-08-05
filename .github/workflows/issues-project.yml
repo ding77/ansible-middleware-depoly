@@ -64,7 +64,7 @@ jobs:
           const issueLabels = context.payload.issue.labels.map(label => label.name);
           
           // 根据你的条件判断是否需要移动Issue，这里以标签为例
-          if (issueLabels.includes("✅ accepted")) {
+          if (github.event.action == 'opened') {
             const projects = await github.projects.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo
