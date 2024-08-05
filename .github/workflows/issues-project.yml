@@ -47,7 +47,7 @@ name: Move Issue to Project Column
 
 on:
   issues:
-    types: [opened]
+    types: [opened, reopened, labeled, closed]
 
 jobs:
   move_to_project_column:
