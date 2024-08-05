@@ -43,21 +43,31 @@
 #         GITHUB_PROJECT_URL: https://github.com/users/ding77/projects/10
 #         GITHUB_PROJECT_COLUMN_NAME: To do
 
-name: Auto Add Issue to Project Column
+name: Add new issue to project column
 
 on:
   issues:
     types: [opened]
 
 jobs:
-  add-issue-to-project-column:
+  add-issue-to-project:
     runs-on: ubuntu-latest
     steps:
-      - name: Add issue to project column
-        uses: actions-ecosystem/action-add-project-card@v2
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Add issue to project
+        uses: actions/github-script@v6
         with:
-          project: https://github.com/users/ding77/projects/10
-          column: 'In Progress'
-          issue-number: ${{ github.event.issue.number }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+          script: |
+            const project = 10
+            const columnName = 'To Do' // Change this to your desired column name
+            const issueNumber = context.payload.issue.number
+
+            // Find the project and add the issue to the specific column
+            github.projects.updateProjectCard({
+              project_id: project,
+              column_id: context.payload.repository.owner + '/' + context.payload.repository.name + '/projects/columns/' + columnName,
+              content_id: issueNumber,
+              content_type: 'Issue'
+            })
