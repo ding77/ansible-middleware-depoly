@@ -1,6 +1,6 @@
-name: Auto Assign to Project(s)
+# name: Auto Assign to Project(s)
 
-on: [issues]
+# on: [issues]
 
 # on:
 #   issues:
@@ -31,15 +31,67 @@ on: [issues]
 #       with:
 #         project: https://github.com/users/ding77/projects/10
 #         column_name: 'In Progress'
+# jobs:
+#   github-actions-automate-projects:
+#     runs-on: ubuntu-latest
+#     steps:
+#     - name: add-new-issues-to-repository-based-project-column
+#       uses: docker://takanabe/github-actions-automate-projects:v0.0.2
+#       if: github.event_name == 'issues' && github.event.action == 'opened'
+#       env:
+#         GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+#         GITHUB_PROJECT_URL: https://github.com/users/ding77/projects/10
+#         GITHUB_PROJECT_COLUMN_NAME: To do
+
+name: Move Issue to Project Column
+
+on:
+  issues:
+    types: [opened]
+
 jobs:
-  github-actions-automate-projects:
+  move_to_project_column:
     runs-on: ubuntu-latest
     steps:
-    - name: add-new-issues-to-repository-based-project-column
-      uses: docker://takanabe/github-actions-automate-projects:latest
-      if: github.event.action == 'opened'
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GITHUB_PROJECT_URL: https://github.com/users/ding77/projects/10
-        GITHUB_PROJECT_COLUMN_NAME: Todo
-  
+    - name: Move issue to project column
+      uses: actions/github-script@v4
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        script: |
+          const projectNumber = 10; // 替换为你的Project编号
+          const columnName = "Todo"; // 替换为你希望移动到的列名
+          const issueNumber = context.payload.issue.number;
+          const issueLabels = context.payload.issue.labels.map(label => label.name);
+          
+          // 根据你的条件判断是否需要移动Issue，这里以标签为例
+          if (issueLabels.includes("✅ accepted")) {
+            const projects = await github.projects.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo
+            });
+            
+            const project = projects.data.find(p => p.number === projectNumber);
+            if (!project) {
+              core.setFailed(`Project #${projectNumber} not found.`);
+              return;
+            }
+            
+            const columns = await github.projects.listColumns({
+              project_id: project.id
+            });
+            
+            const column = columns.data.find(c => c.name === columnName);
+            if (!column) {
+              core.setFailed(`Column '${columnName}' not found in project.`);
+              return;
+            }
+            
+            await github.projects.createCard({
+              column_id: column.id,
+              content_id: issueNumber,
+              content_type: "Issue"
+            });
+            console.log(`Moved issue #${issueNumber} to '${columnName}' column in project #${projectNumber}.`);
+          } else {
+            console.log(`Issue #${issueNumber} does not meet the condition to be moved.`);
+          }
