@@ -73,6 +73,12 @@ jobs:
               content_type: 'Issue'
             });
           } else {
+            console.log(`Moving issue #${issueNumber} to ${targetColumn}`);
+            await github.projects.createCard({
+              column_id: getColumnId(projectNumber, columnName), // 获取列ID的函数
+              content_id: issueNumber,
+              content_type: 'Issue'
+            });
             console.log(`Issue #${issueNumber} does not meet the condition to be moved.`);
           }
 
