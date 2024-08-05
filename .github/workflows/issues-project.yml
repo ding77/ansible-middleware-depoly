@@ -54,7 +54,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Move issue to project column
-      uses: actions/github-script@v4
+      uses: actions/github-script@v5
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         script: |
@@ -62,36 +62,28 @@ jobs:
           const columnName = "Todo"; // 替换为你希望移动到的列名
           const issueNumber = context.payload.issue.number;
           const issueLabels = context.payload.issue.labels.map(label => label.name);
+          const targetColumn = `Project ${projectNumber}: ${columnName}`;
           
           // 根据你的条件判断是否需要移动Issue，这里以标签为例
-          if (issueLabels.includes("accepted")) {
-            const projects = await github.projects.listForRepo({
-              owner: context.repo.owner,
-              repo: context.repo.repo
-            });
-            
-            const project = projects.data.find(p => p.number === projectNumber);
-            if (!project) {
-              core.setFailed(`Project #${projectNumber} not found.`);
-              return;
-            }
-            
-            const columns = await github.projects.listColumns({
-              project_id: project.id
-            });
-            
-            const column = columns.data.find(c => c.name === columnName);
-            if (!column) {
-              core.setFailed(`Column '${columnName}' not found in project.`);
-              return;
-            }
-            
+          if (issueLabels.includes('accepted')) { // 替换为你的标签名称
+            console.log(`Moving issue #${issueNumber} to ${targetColumn}`);
             await github.projects.createCard({
-              column_id: column.id,
+              column_id: getColumnId(projectNumber, columnName), // 获取列ID的函数
               content_id: issueNumber,
-              content_type: "Issue"
+              content_type: 'Issue'
             });
-            console.log(`Moved issue #${issueNumber} to '${columnName}' column in project #${projectNumber}.`);
           } else {
             console.log(`Issue #${issueNumber} does not meet the condition to be moved.`);
+          }
+
+          async function getColumnId(projectNumber, columnName) {
+            const response = await github.projects.listColumns({
+              project_id: projectNumber
+            });
+            const columns = response.data;
+            const column = columns.find(column => column.name === columnName);
+            if (!column) {
+              throw new Error(`Column '${columnName}' not found in project.`);
+            }
+            return column.id;
           }
