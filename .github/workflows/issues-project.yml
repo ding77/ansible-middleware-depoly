@@ -5,28 +5,39 @@ on:
     types: [opened, reopened, labeled, closed]
   issue_comment:
     types: [created]
-env:
-  MY_GITHUB_TOKEN: ${{ secrets.MY_TOKEN_TEST }}
+# env:
+#   MY_GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
 
+# jobs:
+#   assign_one_project:
+#     runs-on: ubuntu-latest
+#     name: Assign to One Project
+#     steps:
+#     - name: Assign NEW issues and NEW pull requests to project ISSUE
+#       uses: srggrs/assign-one-project-github-action@1.2.1
+#       if: github.event.action == 'opened'
+#       with:
+#         project: https://github.com/users/ding77/projects/10
+
+#     - name: Assign issues and pull requests with `bug` label to project 3
+#       uses: srggrs/assign-one-project-github-action@1.2.1
+#       if: |
+#         contains(github.event.issue.labels.*.name, 'BySelf') ||
+#         contains(github.event.issue.labels.*.name, 'Discussion') ||
+#         contains(github.event.issue.labels.*.name, 'question') || 
+#         contains(github.event.issue.labels.*.name, 'usage')
+#       with:
+#         project: https://github.com/users/ding77/projects/10
+#         column_name: 'In Progress'
 jobs:
-  assign_one_project:
+  github-actions-automate-projects:
     runs-on: ubuntu-latest
-    name: Assign to One Project
     steps:
-    - name: Assign NEW issues and NEW pull requests to project ISSUE
-      uses: srggrs/assign-one-project-github-action@1.3.1
-      if: github.event.action == 'opened'
-      with:
-        project: "https://github.com/users/ding77/projects/10"
-        column_name: "Todo"
-
-    - name: Assign issues and pull requests with `bug` label to project ISSUE
-      uses: srggrs/assign-one-project-github-action@1.3.1
-      if: |
-        contains(github.event.issue.labels.*.name, 'BySelf') ||
-        contains(github.event.issue.labels.*.name, 'Discussion') ||
-        contains(github.event.issue.labels.*.name, 'question') || 
-        contains(github.event.issue.labels.*.name, 'usage')
-      with:
-        project: "https://github.com/users/ding77/projects/10"
-        column_name: "In Progress"
+    - name: add-new-issues-to-repository-based-project-column
+      uses: docker://takanabe/github-actions-automate-projects:v0.0.1
+      if: github.event_name == 'issues' && github.event.action == 'opened'
+      env:
+        GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+        GITHUB_PROJECT_URL: https://github.com/users/ding77/projects/10
+        GITHUB_PROJECT_COLUMN_NAME: To do
+  
