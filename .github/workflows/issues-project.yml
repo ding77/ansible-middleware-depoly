@@ -43,53 +43,21 @@
 #         GITHUB_PROJECT_URL: https://github.com/users/ding77/projects/10
 #         GITHUB_PROJECT_COLUMN_NAME: To do
 
-name: Move Issue to Project Column
+name: Auto Add Issue to Project Column
 
 on:
   issues:
-    types: [opened, reopened, labeled, closed]
+    types: [opened]
 
 jobs:
-  move_to_project_column:
+  add-issue-to-project-column:
     runs-on: ubuntu-latest
     steps:
-    - name: Move issue to project column
-      uses: actions/github-script@v5
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          const projectNumber = 10; // 替换为你的Project编号
-          const columnName = "Todo"; // 替换为你希望移动到的列名
-          const issueNumber = context.payload.issue.number;
-          const issueLabels = context.payload.issue.labels.map(label => label.name);
-          const targetColumn = `Project ${projectNumber}: ${columnName}`;
-          
-          // 根据你的条件判断是否需要移动Issue，这里以标签为例
-          if (issueLabels.includes('accepted')) { // 替换为你的标签名称
-            console.log(`Moving issue #${issueNumber} to ${targetColumn}`);
-            await github.projects.createCard({
-              column_id: getColumnId(projectNumber, columnName), // 获取列ID的函数
-              content_id: issueNumber,
-              content_type: 'Issue'
-            });
-          } else {
-            console.log(`Moving issue #${issueNumber} to ${targetColumn}`);
-            await github.projects.createCard({
-              column_id: getColumnId(projectNumber, columnName), // 获取列ID的函数
-              content_id: issueNumber,
-              content_type: 'Issue'
-            });
-            console.log(`Issue #${issueNumber} does not meet the condition to be moved.`);
-          }
-
-          async function getColumnId(projectNumber, columnName) {
-            const response = await github.projects.listColumns({
-              project_id: projectNumber
-            });
-            const columns = response.data;
-            const column = columns.find(column => column.name === columnName);
-            if (!column) {
-              throw new Error(`Column '${columnName}' not found in project.`);
-            }
-            return column.id;
-          }
+      - name: Add issue to project column
+        uses: actions-ecosystem/action-add-project-card@v2
+        with:
+          project: https://github.com/users/ding77/projects/10
+          column: 'In Progress'
+          issue-number: ${{ github.event.issue.number }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
